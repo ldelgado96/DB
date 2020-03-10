@@ -1,0 +1,280 @@
+#include <iostream>
+#include<string>
+#include<vector>
+#include<fstream>
+#include<sstream>
+using namespace std;
+
+class Instructor
+{
+private:
+	string id;
+	string instructor;
+	string department;
+	string building;
+	string budget;
+
+public:
+	Instructor()
+	{
+		id = "";
+		instructor = "";
+		department = "";
+		building = "";
+		budget = "";
+
+	}
+	Instructor(string num, string name, string dept, string build, string money)
+	{
+		id = num;
+		instructor = name;
+		department = dept;
+		building = build;
+		budget = money;
+	}
+	void setID(string num)
+	{
+		id = num;
+	}
+	void setInstructor(string name)
+	{
+		instructor = name;
+	}
+	void setDepartment(string dept)
+	{
+		department = dept;
+	}
+	void setBuilding(string location)
+	{
+		building = location;
+	}
+	void setBudget(string money)
+	{
+		budget = money;
+	}
+	string getID()
+	{
+		return id;
+	}
+	string getInstructor()
+	{
+		return instructor;
+	}
+
+	string getDepartment()
+	{
+		return department;
+	}
+	string getBuilding()
+	{
+		return building;
+	}
+	string getBudget() {
+		return budget;
+	}
+};
+
+int main() {
+	//created the a string vector called instruct
+	vector<string> instruct;
+	//define two file strem objects
+	ifstream instFile, deptFile;
+	//open two files
+	instFile.open("C:\\Users\\ncolo\\Desktop\\instructor.txt");
+	deptFile.open("C:\\Users\\ncolo\\Desktop\\department.txt");
+	string information, token;
+	int tokenstart = 0, count = 0, countDept = 0, delimPosition, a = 0, b = 1, c = 2;;
+	char delim = ',';
+
+	ofstream departmentfile, instructorfile;
+	instructorfile.open("C:\\Users\\ncolo\\Desktop\\instructor.txt");
+	departmentfile.open("C:\\Users\\ncolo\\Desktop\\department.txt");
+
+
+	//create a if else statement that depends on if the file can open
+	if (instFile)
+	{
+		//created a while loop that will continue to run as long as there line in a file
+		//it will also a single line per iteration into the information variable 
+		while (getline(instFile, information))
+		{
+			tokenstart = 0;
+			delim = ',';
+			//creates a int variable that stores the first position of a comma in the information variable 
+			delimPosition = information.find(delim);
+			//created a while loop that will contue to run as long as delimPosition can find a variable
+			while (delimPosition != -1)
+			{
+				//token stores a substring from the information variable 
+				token = information.substr(tokenstart, delimPosition - tokenstart);
+				//store token in the last element of the instruct vector
+				instruct.push_back(token);
+				delimPosition++;
+				tokenstart = delimPosition;
+				//finds the next comma in the information variable
+				delimPosition = information.find(delim, delimPosition);
+				//if there are no more comma in the information variable
+				if (delimPosition == -1)
+				{
+					//store the last substring in the information variable
+					token = information.substr(tokenstart, delimPosition - tokenstart);
+					//store the token in the last element of the instruct vector
+					instruct.push_back(token);
+				}
+
+			}
+			count++;
+		}
+	}
+	else
+		cout << "file didn't open" << endl;
+
+	//create a vector of object for the Instructor class
+	vector<Instructor> object(count);
+
+	for (int i = 0; i < count; i++) {
+		object[i].setID(instruct.at(a));
+		object[i].setInstructor(instruct.at(b));
+		object[i].setDepartment(instruct.at(c));
+
+		a = a + 3;
+		b = b + 3;
+		c = c + 3;
+	}
+
+
+	instruct.clear();
+	if (deptFile)
+	{
+		//created a while loop that will continue to run as long as there line in a file
+		//it will also a single line per iteration into the information variable 
+		while (getline(deptFile, information))
+		{
+			tokenstart = 0;
+			delim = ',';
+			//creates a int variable that stores the first position of a comma in the information variable 
+			delimPosition = information.find(delim);
+			//created a while loop that will contue to run as long as delimPosition can find a variable
+			while (delimPosition != -1)
+			{
+				//token stores a substring from the information variable 
+				token = information.substr(tokenstart, delimPosition - tokenstart);
+				//store token in the last element of the instruct vector
+				instruct.push_back(token);
+				delimPosition++;
+				tokenstart = delimPosition;
+				//finds the next comma in the information variable
+				delimPosition = information.find(delim, delimPosition);
+				//if there are no more comma in the information variable
+				if (delimPosition == -1)
+				{
+					//store the last substring in the information variable
+					token = information.substr(tokenstart, delimPosition - tokenstart);
+					//store the token in the last element of the instruct vector
+					instruct.push_back(token);
+				}
+
+			}
+			countDept++;
+		}
+	}
+	else
+		cout << "file didn't open" << endl;
+
+	cout << countDept << endl;
+	for (int i = 0; i < countDept; i++)
+	{
+		a = 0;
+		b = 1;
+		c = 2;
+		for (int j = 0; j < count; j++)
+		{
+			string temp = object[i].getDepartment();
+			if (temp.compare(instruct.at(a)))
+			{
+				object[i].setBuilding(instruct.at(b));
+				object[i].setBudget(instruct.at(c));
+			}
+			else
+			{
+				a = a + 3;
+				b = b + 3;
+				c = c + 3;
+			}
+		}
+
+	}
+
+	cout << "1. Enter the intructor ID and I will provide you with the name of the instructor, affiliated department and the location of thar department." << endl;
+	cout << "2. Enter the department name and I will provide you with the location, budget and names of all instructors that work for the department." << endl;
+	cout << "3. Insert a record about a new instructor" << endl;
+	cout << "4. Exit" << endl;
+
+	int num;
+	int ID;
+	int depname;
+	bool check = true;
+	switch (num)
+	{
+	case '1': cout << "Enter the instructor ID: " << endl;
+		cin >> ID;
+		for (int i; i < count;i++)
+		{
+			string temp = object[i].getID();
+			istringstream temp1(temp);
+			int value;
+			temp1 >> value;
+			if (ID == value)
+			{
+				cout << object[i].getInstructor() << " " << object[i].getDepartment() << " " << object[i].getBuilding() << endl;
+				check = true;
+			}
+			else
+				check = false;
+		}
+
+		if (check != true)
+		{
+			cout << "Id is not in the database " << endl;
+		}
+		break;
+	
+	case '2': cout << "Enter the department name: " << endl;
+		string deptname;
+		cin >> deptname;
+
+		for (int i; i < count; i++)
+		{
+	
+			if (deptname.compare(object[i].getDepartment())
+			{
+				check = true;
+				cout << object[i].getBuidling << " " << object[i].getBudget << " " << endl;
+
+			}
+
+			
+		
+
+
+		}
+
+			break;
+
+
+
+	case '3': cout << "Enter the instrutor ID: " << endl << "Enter the instructor name: " << endl << " Enter the affiliated department name: " << endl;
+		instructurefile << " " << endl;
+
+
+		break;
+	case '4':cout << " Exit " << endl;
+		break;
+
+
+
+	}
+
+
+	return 0;
+}
